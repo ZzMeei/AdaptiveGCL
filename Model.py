@@ -20,7 +20,7 @@ class Model(nn.Module):
 		self.iEmbeds = nn.Parameter(init(torch.empty(args.item, args.latdim)))
 		self.gcnLayers = nn.Sequential(*[GCNLayer() for i in range(args.gnn_layer)])
 
-	def _forward_gcn(self, adj):
+	def forward_gcn(self, adj):
 		iniEmbeds = torch.concat([self.uEmbeds, self.iEmbeds], axis=0)
 
 		embedsLst = [iniEmbeds]
@@ -147,7 +147,7 @@ class vgae_decoder(nn.Module):
 		posEmbeds = x_item[items]
 		negEmbeds = x_item[neg_items]
 		scoreDiff = pairPredict(ancEmbeds, posEmbeds, negEmbeds)
-		bprLoss = - (scoreDiff).sigmoid().log().sum() / args.batch * args.ssl_bpr_reg
+		bprLoss = - (scoreDiff).sigmoid().log().sum() / args.batch
 		regLoss = calcRegLoss(encoder) * args.reg
 		
 		beta = 0.1
@@ -360,10 +360,10 @@ class DenoisingNet(nn.Module):
 		posEmbeds = x_item[items]
 		negEmbeds = x_item[neg_items]
 		scoreDiff = pairPredict(ancEmbeds, posEmbeds, negEmbeds)
-		bprLoss = - (scoreDiff).sigmoid().log().sum() / args.batch * args.ssl_bpr_reg
+		bprLoss = - (scoreDiff).sigmoid().log().sum() / args.batch
 		regLoss = calcRegLoss(self) * args.reg
 
-		lossl0 = self.lossl0(temperature) * args.lambda1
+		lossl0 = self.lossl0(temperature) * args.lambda0
 		return bprLoss + regLoss + lossl0
 
 

@@ -111,7 +111,7 @@ class Coach:
 			loss.backward()
 
 			# BPR
-			usrEmbeds, itmEmbeds = self.model._forward_gcn(data)
+			usrEmbeds, itmEmbeds = self.model.forward_gcn(data)
 			ancEmbeds = usrEmbeds[ancs]
 			posEmbeds = itmEmbeds[poss]
 			negEmbeds = itmEmbeds[negs]
@@ -166,7 +166,7 @@ class Coach:
 			i += 1
 			usr = usr.long().cuda()
 			trnMask = trnMask.cuda()
-			usrEmbeds, itmEmbeds = self.model._forward_gcn(self.handler.torchBiAdj)
+			usrEmbeds, itmEmbeds = self.model.forward_gcn(self.handler.torchBiAdj)
 			allPreds = torch.mm(usrEmbeds[usr], torch.transpose(itmEmbeds, 1, 0)) * (1 - trnMask) - trnMask * 1e8
 			_, topLocs = torch.topk(allPreds, args.topk)
 			recall, ndcg = self.calcRes(topLocs.cpu().numpy(), self.handler.tstLoader.dataset.tstLocs, usr)
@@ -209,21 +209,9 @@ class Coach:
 
 		return view
 
-def seed_it(seed):
-	random.seed(seed)
-	os.environ["PYTHONSEED"] = str(seed)
-	np.random.seed(seed)
-	torch.cuda.manual_seed(seed)
-	torch.cuda.manual_seed_all(seed)
-	torch.backends.cudnn.deterministic = True
-	torch.backends.cudnn.benchmark = True 
-	torch.backends.cudnn.enabled = True
-	torch.manual_seed(seed)
-
 if __name__ == '__main__':
 	setproctitle.setproctitle('EXP@yangqin')
 
-	seed_it(args.seed)
 	with torch.cuda.device(args.gpu):
 		logger.saveDefault = True
 		
