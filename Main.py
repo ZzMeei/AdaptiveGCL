@@ -7,7 +7,6 @@ from DataHandler import DataHandler
 import numpy as np
 from Utils.Utils import calcRegLoss, pairPredict
 import os
-import setproctitle
 from copy import deepcopy
 import scipy.sparse as sp
 import random
@@ -210,8 +209,6 @@ class Coach:
 		return view
 
 if __name__ == '__main__':
-	setproctitle.setproctitle('EXP@yangqin')
-
 	with torch.cuda.device(args.gpu):
 		logger.saveDefault = True
 		
