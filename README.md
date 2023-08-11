@@ -1,5 +1,7 @@
 # AdaptiveGCL
 
+## Update: Please go to https://github.com/HKUDS/AdaGCL to view the latest relevant source code and datasets of AdaGCL, this repository is no longer valid.
+
 This is the PyTorch implementation for AdaptiveGCL proposed in the paper **Adaptive Graph Contrastive Learning for Recommendation**.
 
 ## 1. Running environment
